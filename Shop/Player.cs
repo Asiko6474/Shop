@@ -38,7 +38,7 @@ namespace Shop
         {
             return _inventory;
         }
-        public void Save(StreamWriter writer)
+        public virtual void Save(StreamWriter writer)
         {
             writer.WriteLine(_gold);
             writer.WriteLine(_inventory);

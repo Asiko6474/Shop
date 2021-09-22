@@ -12,6 +12,7 @@ namespace Shop
     }
     class Game
     {
+        int playerIndex = -1;
         private Player _player;
         private Shop _shop;
         private bool _gameOver;
@@ -99,13 +100,22 @@ namespace Shop
             StreamWriter writer = new StreamWriter("SaveData.txt");
 
             _player.Save(writer);
-
+            writer.WriteLine(playerIndex);
             writer.Close();
         }
 
-        bool load()
+        public bool Load()
         {
-            return false;
+            bool loadSucessful = true;
+            
+            if(!File.Exists("SaveData.txt"))
+                loadSucessful = false;
+
+            StreamReader reader = new StreamReader("SaveData.txt");
+
+            reader.Close();
+
+            return loadSucessful;
         }
 
         void DisplayCurrentScene()
@@ -137,7 +147,7 @@ namespace Shop
             }
             if (choice == 1)
             {
-                if (load())
+                if (Load())
                 {
                     Console.WriteLine("Oh welcome back! (Load Successful)");
                     Console.ReadKey(true);
@@ -164,6 +174,7 @@ namespace Shop
 
         void DisplayShopMenu()
         {
+            Console.WriteLine("you have " + _player.Gold() + "G left.");
             InitializeItems();
             Console.WriteLine("What are you buying?");
             GetShopMenuOptions(_shopStock);
@@ -221,7 +232,7 @@ namespace Shop
             Console.WriteLine("Where are you going to put it?");
             GetShopMenuOptions(_player.GetInventory());
             input = Console.ReadKey().KeyChar;
-            int playerIndex = -1;
+
 
             switch (input)
             {
