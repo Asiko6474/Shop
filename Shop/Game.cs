@@ -84,24 +84,28 @@ namespace Shop
         private void InitializeItems()
         {
             //make the Blue Berry
-            _blueBerry.name = "Blue Berry";
+            _blueBerry.name = "Blue Berry ";
             _blueBerry.cost = 1000;
             //Make the anime figure
-            _animeFigure.name = "An Anime Figure";
+            _animeFigure.name = "An Anime Figure ";
             _animeFigure.cost = 2000;
             //make the literal panacea
-            _panacea.name = "The literal Panacea";
+            _panacea.name = "The literal Panacea ";
             _panacea.cost = 1;
         }
 
-        void save()
+        void Save()
         {
             StreamWriter writer = new StreamWriter("SaveData.txt");
+
+            _player.Save(writer);
+
+            writer.Close();
         }
 
         bool load()
         {
-            return true;
+            return false;
         }
 
         void DisplayCurrentScene()
@@ -125,7 +129,7 @@ namespace Shop
         {
             Console.WriteLine("Heyoooo~! Welcome to Nakano's shop of stuff!");
 
-            int choice = GetInput("Please, so are you a new customer or a returning one?", "New Customer (New Game)", "Returning one (Load Game)");
+            int choice = GetInput("So are you a new customer or a returning one?", "New Customer (New Game)", "Returning one (Load Game)");
 
             if (choice == 0)
             {
@@ -135,28 +139,108 @@ namespace Shop
             {
                 if (load())
                 {
-                    Console.WriteLine("Oh well welcome back! (Load Successful)");
+                    Console.WriteLine("Oh welcome back! (Load Successful)");
                     Console.ReadKey(true);
                     Console.Clear();
                     _currentScene++;
                 }
+                else
+                {
+                    Console.WriteLine("Are you sure? I don't remember you. (Load failed)");
+                    Console.ReadKey(true);
+                    Console.Clear();
+                }
             }
         }
 
-        string[] GetShopMenuOptions(item[] inventory)
+        public void GetShopMenuOptions(item[] inventory)
         {
             for (int i = 0; i < inventory.Length; i++)
             {
-                Console.WriteLine((i + 1) + ". " + inventory[i].name + inventory[i].cost);
+                Console.WriteLine((i + 1) + ". " + inventory[i].name + inventory[i].cost + "G");
             }
-            return inventory;
+            
         }
 
         void DisplayShopMenu()
         {
             InitializeItems();
-            GetShopMenuOptions(_shopStock);
             Console.WriteLine("What are you buying?");
+            GetShopMenuOptions(_shopStock);
+            Console.WriteLine("4. I rather save.");
+            Console.WriteLine("5. I rather leave.");
+            char input = Console.ReadKey(true).KeyChar;
+            //Set out what item to buy
+            int itemIndex = -1;
+            switch (input)
+            {
+                case '1':
+                    itemIndex = 0;
+                    Console.WriteLine("That is one Blue Berry! I wonder why I sell only 1 single berry.");
+                    Console.ReadKey(true);
+                    Console.Clear();
+                    break;
+                case '2':
+                    itemIndex = 1;
+                    Console.WriteLine("Ah yes the Anime Figure, fun fact, it is the most expensive on the market, quite beautiful too!");
+                    Console.WriteLine("Too bad this is a text based game and you can't actually see it.");
+                    Console.ReadKey(true);
+                    Console.Clear();
+                    break;
+                case '3':
+                    itemIndex = 2;
+                    Console.WriteLine("That is the Panacea");
+                    Console.ReadKey(true);
+                    Console.Clear();
+                    break;
+                case '4':
+                    Save();
+                    Console.WriteLine("Alright then! you saved!");
+                    Console.ReadKey(true);
+                    Console.Clear();
+                    return;
+                case '5':
+                    Console.WriteLine("Alright then, see you again next time!");
+                    Console.ReadKey(true);
+                    Console.Clear();
+                    _gameOver = true;
+                    _currentScene++;
+                    return;
+                default:
+                        Console.Clear();
+                        return;
+            }
+            if (_player.Gold() < _shopStock[itemIndex].cost)
+            {
+                Console.WriteLine("You can't afford this.");
+                return;
+            }
+
+
+            // Pick which slot to put the purchased item in.
+            Console.WriteLine("Where are you going to put it?");
+            GetShopMenuOptions(_player.GetInventory());
+            input = Console.ReadKey().KeyChar;
+            int playerIndex = -1;
+
+            switch (input)
+            {
+                case '1':
+                    playerIndex = 0;
+                    break;
+                case '2':
+                    playerIndex = 1;
+                    break;
+                case '3':
+                    playerIndex = 2;
+                    break;
+                default:
+                    return;
+            }
+
+            Console.Clear();
+            _shop.Sell(_player, itemIndex, playerIndex);
+
         }
         public void Run()
         {

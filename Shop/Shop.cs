@@ -33,9 +33,5 @@ namespace Shop
             }
             return false;
         }
-        string[] GetItemNames()
-        {
-
-        }
     }
 }

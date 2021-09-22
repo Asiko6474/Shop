@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace Shop
 {
-    class Player : Shop
+    class Player
     {
         int _gold;
         item[] _inventory;
-        public int Gold;
-        public item[] Inventory;
+        public int Gold()
+        {
+            return _gold;
+        }
 
 
         public Player()
@@ -30,6 +33,15 @@ namespace Shop
                 return true;
             }
             return false;
+        }
+        public item[] GetInventory()
+        {
+            return _inventory;
+        }
+        public void Save(StreamWriter writer)
+        {
+            writer.WriteLine(_gold);
+            writer.WriteLine(_inventory);
         }
     }
 }
