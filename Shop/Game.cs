@@ -113,6 +113,8 @@ namespace Shop
 
             StreamReader reader = new StreamReader("SaveData.txt");
 
+            _player.Load(reader);
+
             reader.Close();
 
             return loadSucessful;

@@ -43,5 +43,13 @@ namespace Shop
             writer.WriteLine(_gold);
             writer.WriteLine(_inventory);
         }
+
+        public virtual bool Load(StreamReader reader)
+        {
+            if (!int.TryParse(reader.ReadLine(), out _gold))
+                return false;
+
+            return true;
+        }
     }
 }
